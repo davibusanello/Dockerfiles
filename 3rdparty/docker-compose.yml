@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  php7-fpm:
+    build:
+      context: ./php/7.0
+      dockerfile: Dockerfile
+    image: php:7.0-fpm
+    restart: always
+    ports:
+      - "9009:9009"
+    environment:
+      DB_PASS: teste
+    volumes:
+      - /home/daviferreira/projects/app_entregou:/var/www/html/app_entregou
+
+  apache:
+    build:
+      context: ./apache2
+      dockerfile: Dockerfile
+    image: apache2
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      DB_PASS: teste
+networks:
+  app:
+volumes:
