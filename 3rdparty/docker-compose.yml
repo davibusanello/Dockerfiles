@@ -5,24 +5,43 @@ services:
       context: ./php/7.0
       dockerfile: Dockerfile
     image: php:7.0-fpm
+    tty: true
     restart: always
     ports:
       - "9009:9009"
+      - "1521:1521"
+    expose:
+      - "9000"
+    extra_hosts:
+      - "dbhost:10.222.31.80"
     environment:
       DB_PASS: teste
     volumes:
-      - /home/daviferreira/projects/app_entregou:/var/www/html/app_entregou
+      # - /home/daviferreira/projects/app_entregou:/var/www/app
+      - ./app:/var/www/app
+      - ./cache/composer:/root/.composer/cache
+      - ./services-config/php-fpm/pool.d/app.conf:/etc/php/7.0/fpm/pool.d/www.conf
+      - ./services-config/fixed/php.ini:/etc/php/7.0/fpm/php.ini
+      # - ./services-config/lite_php_browscap.ini:/var/lite_php_browscap.ini
 
   apache:
     build:
       context: ./apache2
       dockerfile: Dockerfile
     image: apache2
+    tty: true
     restart: always
-    ports:
-      - "80:80"
+    ports: # portas do vhost (host:container)
+      - "8070:80"
+      # - "443:443"
+    links:
+      - php7-fpm
+    depends_on:
+      - php7-fpm
     environment:
       DB_PASS: teste
-networks:
-  app:
-volumes:
+    volumes:
+      # - /home/daviferreira/projects/app_entregou:/var/www/html/app_entregou
+      - ./app:/var/www/app
+      - ./services-config/apache-vhost:/etc/apache2/sites-enabled
+
