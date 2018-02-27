@@ -10,7 +10,7 @@ ENV LC_ALL C.UTF-8
 ENV TZ America/Sao_Paulo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN install_packages apache2 apache2-utils && a2dissite 000-default.conf
+RUN install_packages apache2 apache2-utils vim && a2dissite 000-default.conf
 # libapache2-mod-fastcgi
 
 # Enable additional configs and mods
@@ -24,4 +24,4 @@ RUN a2enmod alias actions proxy_fcgi setenvif rewrite headers
 RUN ln -sf /dev/stdout /var/log/apache2/access.log
 RUN ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log
 RUN ln -sf /dev/stderr /var/log/apache2/error.log
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+# CMD ["apache2ctl", "-D", "FOREGROUND"]

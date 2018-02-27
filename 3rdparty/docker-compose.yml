@@ -4,12 +4,13 @@ services:
     build:
       context: ./php/7.0
       dockerfile: Dockerfile
-    image: php:7.0-fpm
+    image: my/php:7.0-fpm
     tty: true
     restart: always
     ports:
-      - "9009:9009"
-      - "1521:1521"
+      - "9009:9009" # xdebug port
+      - "1521:1521" # oracle database
+      - "9000:9000" # php-fpm
     expose:
       - "9000"
     extra_hosts:
@@ -18,11 +19,11 @@ services:
       DB_PASS: teste
     volumes:
       # - /home/daviferreira/projects/app_entregou:/var/www/app
-      - ./app:/var/www/app
       - ./cache/composer:/root/.composer/cache
-      - ./services-config/php-fpm/pool.d/app.conf:/etc/php/7.0/fpm/pool.d/www.conf
+      - ./app:/var/www/app
       - ./services-config/fixed/php.ini:/etc/php/7.0/fpm/php.ini
       # - ./services-config/lite_php_browscap.ini:/var/lite_php_browscap.ini
+
 
   apache:
     build:
@@ -32,7 +33,7 @@ services:
     tty: true
     restart: always
     ports: # portas do vhost (host:container)
-      - "8070:80"
+      - "8071:80"
       # - "443:443"
     links:
       - php7-fpm
@@ -43,5 +44,7 @@ services:
     volumes:
       # - /home/daviferreira/projects/app_entregou:/var/www/html/app_entregou
       - ./app:/var/www/app
+      # - /var/www/html:/var/www/html
       - ./services-config/apache-vhost:/etc/apache2/sites-enabled
+    command: ["apache2ctl", "-D", "FOREGROUND", "--verbose"]
 
