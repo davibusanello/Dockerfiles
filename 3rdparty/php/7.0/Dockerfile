@@ -19,13 +19,22 @@ RUN install_packages php7.0-fpm php-pecl-http php7.0-xdebug mcrypt \
     php7.0-json php7.0-ldap php7.0-mbstring php7.0-mcrypt php7.0-mysql \
     php7.0-odbc php7.0-opcache php7.0-pgsql php7.0-phpdbg php7.0-pspell \
     php7.0-readline php7.0-recode php7.0-soap php7.0-sqlite3 \
-    php7.0-tidy php7.0-xml php7.0-xmlrpc php7.0-xsl php7.0-zip
+    php7.0-tidy php7.0-xml php7.0-xmlrpc php7.0-xsl php7.0-zip vim
+
+COPY php-fpm/php-fpm.conf /etc/php/7.0/fpm/php-fpm.conf
+COPY php-fpm/pool.d/www.conf  /etc/php/7.0/fpm/pool.d/www.conf
+# RUN mkdir -p /var/www/html
 
 COPY --from=composer:1.6 /usr/bin/composer /usr/bin/composer
+
+COPY docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
+ENTRYPOINT ["docker-php-entrypoint"]
+
+WORKDIR /var/www/html
 # RUN sed -i "s/display_errors = Off/display_errors = On/" /etc/php/7.0/fpm/php.ini
 
-RUN ln -sf /dev/stderr /var/log/php_errors.log && service php7.0-fpm start
+RUN ln -sf /dev/stderr /var/log/php_errors.log
 
-EXPOSE 9009
+# EXPOSE 9009
 EXPOSE 9000
-CMD ["php-fpm7.0", "-D"]
+CMD ["php-fpm7.0"]
