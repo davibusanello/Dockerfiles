@@ -8,20 +8,19 @@ ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 ENV LC_ALL C.UTF-8
 ENV TZ America/Sao_Paulo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-RUN install_packages apache2 apache2-utils vim && a2dissite 000-default.conf
-# libapache2-mod-fastcgi
-
-# Enable additional configs and mods
-# RUN ln -s $HTTPD_PREFIX/mods-available/expires.load $HTTPD_PREFIX/mods-enabled/expires.load \
-#     && ln -s $HTTPD_PREFIX/mods-available/headers.load $HTTPD_PREFIX/mods-enabled/headers.load \
-# 	&& ln -s $HTTPD_PREFIX/mods-available/rewrite.load $HTTPD_PREFIX/mods-enabled/rewrite.load
-
-RUN a2enmod alias actions proxy_fcgi setenvif rewrite headers
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && install_packages apache2 apache2-utils supervisor vim inotify-tools \
+    && mkdir -p /var/log/supervisor \
+    && mkdir -p /etc/supervisor/conf.d \
+    && a2dissite 000-default.conf \
+    && a2enmod alias actions proxy_fcgi setenvif rewrite headers
+ADD supervisor.conf /etc/supervisor.conf
 
 # Symlink apache access and error logs to stdout/stderr so Docker logs shows them
-RUN ln -sf /dev/stdout /var/log/apache2/access.log
-RUN ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log
-RUN ln -sf /dev/stderr /var/log/apache2/error.log
-# CMD ["apache2ctl", "-D", "FOREGROUND"]
+RUN ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log \
+    && ln -sf /dev/stderr /var/log/apache2/error.log
+
+COPY reload-config /usr/local/bin/
+
+CMD ["supervisord", "-c", "/etc/supervisor.conf"]
