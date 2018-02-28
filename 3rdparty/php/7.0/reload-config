@@ -1,0 +1,5 @@
+#!/bin/bash
+# This script will execute $2 command when $1 are modificated
+while inotifywait -qqre modify "$1"; do
+    $2
+done
