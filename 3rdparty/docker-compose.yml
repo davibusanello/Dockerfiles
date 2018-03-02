@@ -18,7 +18,6 @@ services:
     environment:
       DB_PASS: teste
     volumes:
-      # - /home/daviferreira/projects/app_entregou:/var/www/app
       - ./cache/composer:/root/.composer/cache
       - ./app:/var/www/app
       - ./services-config/fixed/php.ini:/etc/php/7.0/fpm/php.ini
@@ -41,7 +40,6 @@ services:
     environment:
       DB_PASS: teste
     volumes:
-      # - /home/daviferreira/projects/app_entregou:/var/www/html/app_entregou
       - ./app:/var/www/app
       # - /var/www/html:/var/www/html
       - ./services-config/apache-vhost:/etc/apache2/sites-enabled
