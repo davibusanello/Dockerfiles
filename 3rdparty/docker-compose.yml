@@ -5,18 +5,19 @@ services:
       context: ./php/7.0
       dockerfile: Dockerfile
     image: my/php:7.0-fpm
+    container_name: php7-fpm
     tty: true
     restart: always
     ports:
-      - "9009:9009" # xdebug port
+#      - "9009:9009" # xdebug port
       - "1521:1521" # oracle database
       # - "9000:9000" # php-fpm
-    expose:
-      - "9000"
     extra_hosts:
       - "dbhost:10.222.31.80"
     environment:
-      DB_PASS: teste
+      APPLICATION_ENV: development
+      XDEBUG_CONFIG: remote_host=172.17.0.1 # ip do host do docker/maquina local
+      PHP_IDE_CONFIG: "serverName=application"
     volumes:
       - ./cache/composer:/root/.composer/cache
       - ./app:/var/www/app
@@ -39,6 +40,7 @@ services:
       - php7-fpm
     environment:
       DB_PASS: teste
+      APPLICATION_ENV: development
     volumes:
       - ./app:/var/www/app
       # - /var/www/html:/var/www/html
