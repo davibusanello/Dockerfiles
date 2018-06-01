@@ -11,8 +11,18 @@ ENV locale-gen=en_US.UTF-8 \
 EXPOSE 3000
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && apt-get update && apt-get install -y build-essential automake autoconf \
-    patch sqlite3 zip git
+    && apt-get update && apt-get install -y autoconf build-essential automake \
+    git \
+    libpq-dev \
+    libsqlite3-dev \
+    nodejs \
+    patch \
+    sqlite3 \
+    tzdata \
+    telnet \
+    zip \
+    # Clear
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Point Bundler at /gems. This will cause Bundler to re-use gems that have already been installed on the gems volume
 ENV BUNDLE_PATH /gems
