@@ -27,20 +27,20 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
 # Point Bundler at /gems. This will cause Bundler to re-use gems that have already been installed on the gems volume
 ENV BUNDLE_PATH /gems
 ENV BUNDLE_HOME /gems
- 
+
 # Increase how many threads Bundler uses when installing. Optional!
 ENV BUNDLE_JOBS 4
- 
+
 # How many times Bundler will retry a gem download. Optional!
 ENV BUNDLE_RETRY 3
- 
+
 # Where Rubygems will look for gems, similar to BUNDLE_ equivalents.
 ENV GEM_HOME /gems
 ENV GEM_PATH /gems
- 
+
 # Add /gems/bin to the path so any installed gem binaries are runnable from bash.
 ENV PATH /gems/bin:$PATH
- 
+
 # Allow SSH keys to be mounted (optional, but nice if you use SSH authentication for git)
 VOLUME /root/.ssh
 
