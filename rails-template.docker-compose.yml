@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+    - 80:80
+    depends_on:
+    - rails
+  postgresdb:
+    image: postgres:10-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - 5432
+  rails:
+    build:
+      context: .
+      dockerfile: ./ruby/2.5/alpine.Dockerfile
+    image: davibusanello/ruby:2.5-alpine-rails
+    volumes:
+      - .:/app
+    environment:
+      - RAILS_ENV=${RAILS_ENV}
+    depends_on:
+      - postgresdb
+
+
